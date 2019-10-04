@@ -4,9 +4,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.LdapShaPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -20,7 +18,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .url("ldap://localhost:8389/dc=springframework,dc=org")
                 .and()
                 .passwordCompare()
-                .passwordEncoder(passwordEncoder())
+                .passwordEncoder(new LdapShaPasswordEncoder())
                 .passwordAttribute("userPassword");
     }
 
@@ -31,23 +29,5 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .fullyAuthenticated()
                 .and()
                 .formLogin();
-    }
-
-    private PasswordEncoder passwordEncoder() {
-        final BCryptPasswordEncoder crypt = new BCryptPasswordEncoder();
-        return new PasswordEncoder() {
-            @Override
-            public String encode(CharSequence rawPassword) {
-                // Prefix so that apache directory understands that bcrypt has been used.
-                // Without this, it assumes SSHA and fails during authentication.
-                return "{CRYPT}" + crypt.encode(rawPassword);
-            }
-
-            @Override
-            public boolean matches(CharSequence rawPassword, String encodedPassword) {
-                // remove {CRYPT} prefix
-                return crypt.matches(rawPassword, encodedPassword.substring(12));
-            }
-        };
     }
 }

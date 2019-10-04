@@ -52,7 +52,7 @@ objectclass: inetOrgPerson
 cn: Ahmed Aziz
 sn: Aziz
 uid: ahmed
-userPassword: ahmed83
+userPassword: HERE HAVE TO BE AN ENCRYPTED HASH CODE
 
 dn: uid=joe,ou=otherpeople,dc=springframework,dc=org
 objectclass: top
