@@ -8,6 +8,6 @@ public class HomeResource {
 
     @GetMapping("/")
     public String getText() {
-        return "Hello Ahmed's world!";
+        return "Hello world!";
     }
 }
